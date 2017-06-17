@@ -8,11 +8,11 @@ import java.util.HashMap;
  * Created by the-french-cat on 17/06/17.
  */
 
-public class Coordinates implements JSONable {
+class Coordinates implements JSONable {
     private Double mX;
     private Double mY;
 
-    private Coordinates(Double x, Double y) {
+    Coordinates(Double x, Double y) {
         mX = x;
         mY = y;
     }
