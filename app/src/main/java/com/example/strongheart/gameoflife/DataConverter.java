@@ -24,6 +24,7 @@ class DataConverter implements DataConvertable {
     @Override
     public JSONable setBeaconCoordinates(List<Pair<Integer, Double>> listOfTxesAndRssis) {
         Pair<Double, Double> xyPair = getXYPair(listOfTxesAndRssis);
+        xyPair = normalize(xyPair);
         return new Coordinates(xyPair.first, xyPair.second);
     }
 
@@ -41,5 +42,13 @@ class DataConverter implements DataConvertable {
         Double yp = (Math.pow(da, 2) - Math.pow(dc, 2) - Math.pow(xa, 2) + Math.pow(xc, 2) - Math.pow(ya, 2) + Math.pow(yc, 2) + (Math.pow(db, 2) - Math.pow(da, 2) + Math.pow(xa, 2) - Math.pow(xb, 2) + Math.pow(ya, 2) - Math.pow(yb, 2)) / (2 * xa - 2 * xb)) / ((ya - yb) / (xa - xb) * (2 * xa - 2 * xc) - 2 * ya + 2 * yc);
         Double xp = (Math.pow(db, 2) - Math.pow(da, 2) + Math.pow(xa, 2) - Math.pow(xb, 2) - Math.pow(ya, 2) - Math.pow(yb, 2) - yp * (2 * ya - 2 * yb)) / (2 * xa - 2 * xb);
         return new Pair<>(xp, yp);
+    }
+
+    private Pair<Double, Double> normalize(Pair<Double, Double> pair) {
+        Double x = pair.first / mFieldLengthX;
+        x = x < 0 ? 0 : x > 1 ? 1 : x;
+        Double y = pair.second / mFieldLengthY;
+        y = y < 0 ? 0 : y > 1 ? 1 : y;
+        return new Pair<>(x, y);
     }
 }
