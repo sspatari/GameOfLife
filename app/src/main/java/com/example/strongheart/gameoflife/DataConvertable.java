@@ -1,12 +1,13 @@
 package com.example.strongheart.gameoflife;
 
+import android.util.Pair;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by the-french-cat on 17/06/17.
  */
 
 public interface DataConvertable {
-    public JSONable setBeaconCoordinates(List<Map<Integer, Double>> listOfTxesAndRssis);
+    public JSONable setBeaconCoordinates(List<Pair<Integer, Double>> listOfTxesAndRssis);
 }
