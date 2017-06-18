@@ -21,27 +21,27 @@ public class SocketConnection {
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://192.168.0.67:4605");
+            mSocket = IO.socket("http://192.168.0.167:4606");
         } catch (URISyntaxException e) {}
     }
 
     public SocketConnection(Context context) {
         this.mainActivity = (MainActivity) context;
         mSocket.on("getColor", onGetColor);
-        mSocket.on("getClient", onClientDetect);
-        mSocket.on("getBomb", onBombDetect);
+        mSocket.on("getClients", onClientsDetect);
+        mSocket.on("getBombs", onBombsDetect);
         mSocket.on("getTargets", onTargetsDetect);
         mSocket.connect();
     }
 
-    private Emitter.Listener onClientDetect = new Emitter.Listener() {
+    private Emitter.Listener onClientsDetect = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    Log.i("getClient", data.toString());
+                    JSONArray data = (JSONArray) args[0];
+                    Log.i("getClients", data.toString());
 //                        JSONArray targets;
 //                        try {
                     //targets = data.getJSONObject(i).getString("value");
@@ -51,24 +51,22 @@ public class SocketConnection {
 //                        }
 
                     // add the message to view
-                    changeClient(data);
+                    changeClients(data);
                 }
             });
         }
     };
 
-    private Emitter.Listener onBombDetect = new Emitter.Listener() {
+    private Emitter.Listener onBombsDetect = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    if(data != null) {
-                        Log.i("getBomb", data.toString());
-                    }
+                    JSONArray data = (JSONArray) args[0];
+                    Log.i("getBombs", data.toString());
                     // add the message to view
-                    changeBomb(data);
+                    changeBombs(data);
                 }
             });
         }
@@ -104,22 +102,22 @@ public class SocketConnection {
         }
     };
 
+
     private void initClientColor(JSONObject data) {
         mainActivity.setInitClientColor(data);
     }
 
-    private void changeClient(JSONObject data) {
-        mainActivity.getGameMap().setClient(data);
-        mainActivity.getGameMap().updateClient();
-
+    private void changeClients(JSONArray data) {
+        mainActivity.getGameMap().setClients(data);
+        mainActivity.getGameMap().updateAllClients();
 //        gameMap.setData();
 //        textView1 = (TextView) findViewById(R.id.fragment1).findViewById(R.id.textView1);
 //        textView1.setText(targets);
     }
 
-    private void changeBomb(JSONObject data) {
-        mainActivity.getGameMap().setBomb(data);
-        mainActivity.getGameMap().updateBomb();
+    private void changeBombs(JSONArray data) {
+        mainActivity.getGameMap().setBombs(data);
+        mainActivity.getGameMap().updateAllBombs();
     }
 
     private void changeTargets(JSONArray data) {
@@ -130,8 +128,10 @@ public class SocketConnection {
     public void dispose() {
         mSocket.disconnect();
         mSocket.off("getColor", onTargetsDetect);
-        mSocket.off("getClient", onClientDetect);
-        mSocket.off("getBomb", onBombDetect);
+        mSocket.off("getClients", onClientsDetect);
+        mSocket.off("getBombs", onBombsDetect);
         mSocket.off("getTargets", onTargetsDetect);
     }
+
+
 }
