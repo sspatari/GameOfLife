@@ -8,6 +8,8 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -84,6 +86,18 @@ public class SocketConnection {
             });
         }
     };
+
+    public void emmitMessage(JSONable coordinates) {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("Message", coordinates.toJson());
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        mSocket.emit("message", obj);
+    }
 
     private void changeClients(JSONArray data) {
         mainActivity.getGameMap().setClients(data);

@@ -75,6 +75,7 @@ public class BleCommunication {
             @Override
             public void onScanResult(int callbackType, final ScanResult result) {
                 super.onScanResult(callbackType, result);
+                JSONable toTransfer;
                 int change = 0;
                 byte[] data;
                 int TxPower;
@@ -96,6 +97,7 @@ public class BleCommunication {
                     found ++;
                     if(found == 3) {
                         found = 0;
+                        toTransfer = new DataConverter(10.0,10.0).setBeaconCoordinates(prepareToTransfer());
                     }
                     currentMinor = MajorsMinors.get("minors").get(found);
                     calculateDistance((int)beaconData.get("minor"),(int)beaconData.get("tx"),result.getRssi());
