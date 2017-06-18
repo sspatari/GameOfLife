@@ -7,14 +7,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends FragmentActivity {
+    private GameMapFragment gameMapFragment;
+    private SocketConnection connection;
+    private ScreenBars screenBars;
 
     private BleCommunication communication;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        screenBars = new ScreenBars(this);
+        gameMapFragment = (GameMapFragment) getFragmentManager().findFragmentById(R.id.fragment1);
+        connection = new SocketConnection(this);
+
 
         communication = new BleCommunication(this);
     }
@@ -44,4 +52,14 @@ public class MainActivity extends AppCompatActivity {
             // permissions this app might request
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        connection.dispose();
+    }
+
+    public GameMapFragment getGameMap() { return gameMapFragment; }
+
+    public ScreenBars getScreenBars() {return screenBars;}
 }
