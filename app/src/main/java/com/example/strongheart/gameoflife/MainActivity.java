@@ -11,6 +11,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.Socket;
+
 
 public class MainActivity extends FragmentActivity {
     private GameMapFragment gameMapFragment;
@@ -78,4 +80,8 @@ public class MainActivity extends FragmentActivity {
     public GameMapFragment getGameMap() { return gameMapFragment; }
 
     public ScreenBars getScreenBars() {return screenBars;}
+
+    public SocketConnection getConnection() { return connection; }
+
+    public Client getClient() { return this.client; }
 }

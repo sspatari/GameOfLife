@@ -60,12 +60,12 @@ class DataConverter implements DataConvertable {
     }
 
     private Pair<Double, Double> filter(Double xp, Double yp) {
-        mMeasurements.set(0, 0, xp);
-        mMeasurements.set(1, 0, yp);
-        mCorrectedState = mJKalman.Correct(mMeasurements);
-        mPredict = mJKalman.Predict();
-        xp = mPredict.get(0, 0);
-        yp = mPredict.get(1, 0);
+//        mMeasurements.set(0, 0, xp);
+//        mMeasurements.set(1, 0, yp);
+//        mCorrectedState = mJKalman.Correct(mMeasurements);
+//        mPredict = mJKalman.Predict();
+//        xp = mPredict.get(0, 0);
+//        yp = mPredict.get(1, 0);
 
         return new Pair<>(xp, yp);
     }

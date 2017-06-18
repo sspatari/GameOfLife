@@ -49,6 +49,8 @@ public class BleCommunication {
 
     private MainActivity mainActivity;
 
+    private SocketConnection socketConnection;
+
     public BleCommunication(Context context) {
         this.mainActivity = (MainActivity) context;
 
@@ -59,6 +61,8 @@ public class BleCommunication {
         MajorsMinors.put("minors", Arrays.asList(26210, 36332, 35133));
 
         currentMinor = MajorsMinors.get("minors").get(found);
+
+        socketConnection = mainActivity.getConnection();
 
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
@@ -98,6 +102,7 @@ public class BleCommunication {
                     if(found == 3) {
                         found = 0;
                         toTransfer = new DataConverter(10.0,10.0).setBeaconCoordinates(prepareToTransfer());
+                        socketConnection.emmitMessage(toTransfer);
                     }
                     currentMinor = MajorsMinors.get("minors").get(found);
                     calculateDistance((int)beaconData.get("minor"),(int)beaconData.get("tx"),result.getRssi());

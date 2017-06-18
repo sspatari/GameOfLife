@@ -112,6 +112,7 @@ public class SocketConnection {
     private void changeClient(JSONObject data) {
         mainActivity.getGameMap().setClient(data);
         mainActivity.getGameMap().updateClient();
+    }
 
     public void emmitMessage(JSONable coordinates) {
         JSONObject obj = new JSONObject();
@@ -122,12 +123,12 @@ public class SocketConnection {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        mSocket.emit("message", obj);
+        mSocket.emit("updateClient", obj);
     }
 
-    private void changeClients(JSONArray data) {
-        mainActivity.getGameMap().setClients(data);
-        mainActivity.getGameMap().updateAllClients();
+    private void changeClients(JSONObject data) {
+        mainActivity.getGameMap().setClient(data);
+        mainActivity.getGameMap().updateClient();
 //        gameMap.setData();
 //        textView1 = (TextView) findViewById(R.id.fragment1).findViewById(R.id.textView1);
 //        textView1.setText(targets);
