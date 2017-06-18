@@ -8,6 +8,7 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -26,6 +27,7 @@ public class SocketConnection {
 
     public SocketConnection(Context context) {
         this.mainActivity = (MainActivity) context;
+        mSocket.on("getColor", onGetColor);
         mSocket.on("getClients", onClientsDetect);
         mSocket.on("getBombs", onBombsDetect);
         mSocket.on("getTargets", onTargetsDetect);
@@ -85,6 +87,25 @@ public class SocketConnection {
         }
     };
 
+    private Emitter.Listener onGetColor = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            mainActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    Log.i("getColor", data.toString());
+                    // add the message to view
+                    initClientColor(data);
+                }
+            });
+        }
+    };
+
+    private void initClientColor(JSONObject data) {
+        mainActivity.setInitClientColor(data);
+    }
+
     private void changeClients(JSONArray data) {
         mainActivity.getGameMap().setClients(data);
         mainActivity.getGameMap().updateAllClients();
@@ -105,6 +126,7 @@ public class SocketConnection {
 
     public void dispose() {
         mSocket.disconnect();
+        mSocket.off("getColor", onTargetsDetect);
         mSocket.off("getClients", onClientsDetect);
         mSocket.off("getBombs", onBombsDetect);
         mSocket.off("getTargets", onTargetsDetect);
