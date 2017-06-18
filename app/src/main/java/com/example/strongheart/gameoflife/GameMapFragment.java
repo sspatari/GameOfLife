@@ -25,8 +25,8 @@ public class GameMapFragment extends Fragment {
     private List<ProgressBar> distanceBars;
     private TextView textView1;
     private int i = 0;
-    private JSONArray clients;
-    private JSONArray bombs;
+    private JSONObject client;
+    private JSONObject bomb;
 
     private GameMapAnimationLayout gameMapAnimationLayout;
 
@@ -85,20 +85,22 @@ public class GameMapFragment extends Fragment {
         gameMapAnimationLayout.resume();
     }
 
-    public void setClients (JSONArray clients) {
-        this.clients = clients;
-        Log.i("clients_json", clients.toString());
+    public void setClient (JSONObject client) {
+        this.client = client;
+        Log.i("clients_json", client.toString());
 
         //textView1.setText(clients.toString());
     }
 
-    public void setBombs (JSONArray bombs) {
-        this.bombs = bombs;
-        Log.i("bombs_json", bombs.toString());
+    public void setBomb (JSONObject bomb) {
+        this.bomb = bomb;
+        if(bomb != null) {
+            Log.i("bomb_json", bomb.toString());
+        }
         //textView1.setText(bombs.toString());
     }
 
-    public void updateAllClients() {
+    public void updateClient() {
         int animationLayoutWidth = gameMapAnimationLayout.getWidth();
         int animationLayoutHeight = gameMapAnimationLayout.getHeight();
 
@@ -110,28 +112,25 @@ public class GameMapFragment extends Fragment {
             }
         }
 
-        for(int i=0; i<clients.length(); ++i) {
-            try{
-                JSONObject jsonObject = clients.getJSONObject(i);
-                float clientX_Coor =  animationLayoutWidth * Float.parseFloat(jsonObject.getString("x"));
-                float clientY_Coor =  animationLayoutHeight * Float.parseFloat(jsonObject.getString("y"));
-                String clientColor = jsonObject.getString("color");
-                if (!listColors.contains(clientColor)) {
-                    gameMapAnimationLayout.generateClientCircle(clientX_Coor, clientY_Coor,
-                            50, clientColor);
-                    Log.i("generate", "yes");
-                }else{
-                    gameMapAnimationLayout.updateClientCircle(clientX_Coor, clientY_Coor,
-                            50, clientColor);
-                    Log.i("updated", "yes");
-                }
-            }catch (JSONException e) {
-            Log.i("ClientJsonExpetion",e.toString());
-        }
+        try{
+            float clientX_Coor =  animationLayoutWidth * Float.parseFloat(client.getString("x"));
+            float clientY_Coor =  animationLayoutHeight * Float.parseFloat(client.getString("y"));
+            String clientColor = client.getString("color");
 
+            if (!listColors.contains(clientColor)) {
+                gameMapAnimationLayout.generateClientCircle(clientX_Coor, clientY_Coor,
+                        50, clientColor);
+                Log.i("generate", "yes");
+            }else{
+                gameMapAnimationLayout.updateClientCircle(clientX_Coor, clientY_Coor,
+                        50, clientColor);
+                Log.i("updated", "yes");
+            }
+        }catch (JSONException e) {
+        Log.i("ClientJsonExpetion",e.toString());
         }
     }
-    public void updateAllBombs() {};
+    public void updateBomb() {};
 
 //    private void updateClient(int clientIndex) {
 //        try{

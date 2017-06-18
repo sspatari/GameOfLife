@@ -28,20 +28,21 @@ public class SocketConnection {
 
     public SocketConnection(Context context) {
         this.mainActivity = (MainActivity) context;
-        mSocket.on("getClients", onClientsDetect);
-        mSocket.on("getBombs", onBombsDetect);
+        mSocket.on("getColor", onGetColor);
+        mSocket.on("getClient", onClientDetect);
+        mSocket.on("getBomb", onBombDetect);
         mSocket.on("getTargets", onTargetsDetect);
         mSocket.connect();
     }
 
-    private Emitter.Listener onClientsDetect = new Emitter.Listener() {
+    private Emitter.Listener onClientDetect = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    JSONArray data = (JSONArray) args[0];
-                    Log.i("getClients", data.toString());
+                    JSONObject data = (JSONObject) args[0];
+                    Log.i("getClient", data.toString());
 //                        JSONArray targets;
 //                        try {
                     //targets = data.getJSONObject(i).getString("value");
@@ -51,22 +52,24 @@ public class SocketConnection {
 //                        }
 
                     // add the message to view
-                    changeClients(data);
+                    changeClient(data);
                 }
             });
         }
     };
 
-    private Emitter.Listener onBombsDetect = new Emitter.Listener() {
+    private Emitter.Listener onBombDetect = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    JSONArray data = (JSONArray) args[0];
-                    Log.i("getBombs", data.toString());
+                    JSONObject data = (JSONObject) args[0];
+                    if(data != null) {
+                        Log.i("getBomb", data.toString());
+                    }
                     // add the message to view
-                    changeBombs(data);
+                    changeBomb(data);
                 }
             });
         }
@@ -86,6 +89,29 @@ public class SocketConnection {
             });
         }
     };
+
+    private Emitter.Listener onGetColor = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            mainActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    Log.i("getColor", data.toString());
+                    // add the message to view
+                    initClientColor(data);
+                }
+            });
+        }
+    };
+
+    private void initClientColor(JSONObject data) {
+        mainActivity.setInitClientColor(data);
+    }
+
+    private void changeClient(JSONObject data) {
+        mainActivity.getGameMap().setClient(data);
+        mainActivity.getGameMap().updateClient();
 
     public void emmitMessage(JSONable coordinates) {
         JSONObject obj = new JSONObject();
@@ -107,9 +133,9 @@ public class SocketConnection {
 //        textView1.setText(targets);
     }
 
-    private void changeBombs(JSONArray data) {
-        mainActivity.getGameMap().setBombs(data);
-        mainActivity.getGameMap().updateAllBombs();
+    private void changeBomb(JSONObject data) {
+        mainActivity.getGameMap().setBomb(data);
+        mainActivity.getGameMap().updateBomb();
     }
 
     private void changeTargets(JSONArray data) {
@@ -119,8 +145,9 @@ public class SocketConnection {
 
     public void dispose() {
         mSocket.disconnect();
-        mSocket.off("getClients", onClientsDetect);
-        mSocket.off("getBombs", onBombsDetect);
+        mSocket.off("getColor", onTargetsDetect);
+        mSocket.off("getClient", onClientDetect);
+        mSocket.off("getBomb", onBombDetect);
         mSocket.off("getTargets", onTargetsDetect);
     }
 
