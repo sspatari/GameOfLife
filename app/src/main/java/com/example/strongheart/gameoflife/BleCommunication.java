@@ -15,6 +15,7 @@ import android.support.v4.util.Pair;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -176,4 +177,13 @@ public class BleCommunication {
     public BluetoothLeScanner getLeScanner() { return  this.LeScanner; }
 
     public ScanCallback getScanCallback() { return this.scanCallback; }
+
+    public List<android.util.Pair<Integer, Double>> prepareToTransfer() {
+        List<android.util.Pair<Integer, Double>> toTransfer = new ArrayList<>();
+        for(int i = 0; i < MajorsMinors.get("minors").size(); i++) {
+            toTransfer.add(new android.util.Pair<Integer, Double>(Integer.parseInt(map.get(MajorsMinors.get("minors").get(0))[0]),
+                    Double.parseDouble(map.get(MajorsMinors.get("minors").get(0))[1])));
+        }
+        return toTransfer;
+    }
 }
