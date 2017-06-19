@@ -126,7 +126,7 @@ public class GameMapFragment extends Fragment {
                     Log.i("updated", "yes");
                 }
             }catch (JSONException e) {
-            Log.i("ClientJsonExpetion",e.toString());
+            //Log.i("ClientJsonExpetion",e.toString());
         }
 
         }
