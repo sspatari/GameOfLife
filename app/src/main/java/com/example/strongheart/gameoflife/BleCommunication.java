@@ -12,8 +12,12 @@ import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +55,10 @@ public class BleCommunication {
 
     private SocketConnection socketConnection;
 
+    private DataConverter dataConverter =  new DataConverter(10.0,10.0);
+
+    private List<Double> distances;
+
     public BleCommunication(Context context) {
         this.mainActivity = (MainActivity) context;
 
@@ -59,6 +67,8 @@ public class BleCommunication {
         MajorsMinors.put("majors", Arrays.asList(177));
 
         MajorsMinors.put("minors", Arrays.asList(26210, 36332, 35133));
+
+        distances = new ArrayList<>();
 
         currentMinor = MajorsMinors.get("minors").get(found);
 
@@ -79,7 +89,7 @@ public class BleCommunication {
             @Override
             public void onScanResult(int callbackType, final ScanResult result) {
                 super.onScanResult(callbackType, result);
-                JSONable toTransfer;
+                JSONObject toTransfer;
                 int change = 0;
                 byte[] data;
                 int TxPower;
@@ -99,13 +109,35 @@ public class BleCommunication {
                 }
                 if(beaconData != null && (int)beaconData.get("minor") == currentMinor) {
                     found ++;
+                    Log.e("FOUND","" + found);
+                    calculateDistance((int)beaconData.get("minor"),(int)beaconData.get("tx"),result.getRssi());
                     if(found == 3) {
                         found = 0;
-                        toTransfer = new DataConverter(10.0,10.0).setBeaconCoordinates(prepareToTransfer());
+
+                        dataConverter.setBeaconCoordinates(MajorsMinors.get("minors"),distances);
+                        distances.clear();
+                        toTransfer = dataConverter.getCoordinates1();
+                        try {
+                            Log.e("JSON", "" + toTransfer.getString("x"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            mainActivity.getClient().setX(Float.parseFloat(toTransfer.getString("x")));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            mainActivity.getClient().setY(Float.parseFloat(toTransfer.getString("y")));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         socketConnection.emmitMessage(toTransfer);
+                        Log.e("SEND","TO Server");
                     }
                     currentMinor = MajorsMinors.get("minors").get(found);
-                    calculateDistance((int)beaconData.get("minor"),(int)beaconData.get("tx"),result.getRssi());
+
+
                     //updateDistance((int)beaconData.get("minor"));
                 }
             }
@@ -158,6 +190,7 @@ public class BleCommunication {
         values[0] = String.valueOf(Tx);
         values[1] = String.valueOf(rssi);
         values[2] = String.valueOf(distance);
+        distances.add(distance);
         map.put(major,values);
     }
 

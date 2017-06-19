@@ -1,5 +1,8 @@
 package com.example.strongheart.gameoflife;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +19,22 @@ class Coordinates implements JSONable {
         mY = y;
     }
 
-    public Map<String, Double> toJson() {
-        Map<String, Double> array = new HashMap<>();
-        array.put("x", mX);
-        array.put("y", mY);
+    public JSONObject toJson() {
+        JSONObject array = new JSONObject();
+        try {
+            array.put("x", mX);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            array.put("y", mY);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return array;
     }
+
+    public float getX () {return mX.floatValue();}
+
+    public float getY () {return mY.floatValue();}
 }

@@ -66,7 +66,7 @@ public class GameMapAnimationLayout extends SurfaceView implements Runnable {
 
             drawClientCircles();
 
-            Log.i("circlesNr", Integer.toString(circles.size()));
+            //Log.i("circlesNr", Integer.toString(circles.size()));
 
             surfaceHolder.unlockCanvasAndPost(canvas);
 
@@ -129,16 +129,16 @@ public class GameMapAnimationLayout extends SurfaceView implements Runnable {
 
     public void updateClientCircle(float x, float y, float radius, String color) {
         for(int i=0; i<circles.size(); ++i) {
-            Log.i("change1", circles.get(i).getColor() + "^^^^" + color);
+           // Log.i("change1", circles.get(i).getColor() + "^^^^" + color);
             if(circles.get(i).getColor().equals(color)) {
                 circles.get(i).setX(x);
                 circles.get(i).setY(y);
                 circles.get(i).setRadius(radius);
                 circles.get(i).setColor(color);
-                Log.i("change2","yes");
+                //Log.i("change2","yes");
                 break;
             }
-            Log.i("change3","no "+ Integer.toString(i) );
+            //og.i("change3","no "+ Integer.toString(i) );
         }
     }
 
